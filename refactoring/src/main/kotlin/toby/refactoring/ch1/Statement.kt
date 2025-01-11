@@ -12,7 +12,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     invoice.performances.forEach { perf ->
         val play = plays[perf.playID]!!
-        var thisAmount = 0
+        var thisAmount: Int
 
         when (play.type) {
             "tragedy" -> {

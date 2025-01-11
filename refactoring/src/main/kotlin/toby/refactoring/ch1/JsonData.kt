@@ -3,7 +3,6 @@ package toby.refactoring.ch1
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.decodeFromJsonElement
 
 private val playJson = """
     {
