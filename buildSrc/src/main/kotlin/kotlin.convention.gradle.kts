@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") // version "2.0.21"
+    kotlin("plugin.serialization")
 }
 
 group = "toby"
@@ -10,6 +11,8 @@ repositories {
 }
 
 dependencies {
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0")
+
     testImplementation(kotlin("test"))
     testImplementation("org.assertj:assertj-core:3.27.2")
 }
