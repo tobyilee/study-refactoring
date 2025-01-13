@@ -4,6 +4,10 @@ import java.text.NumberFormat
 import java.util.*
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
+    fun playFor(performance: Performance): Play {
+        return plays[performance.playID]!!
+    }
+
     var totalAmount = 0
     var volumeCredits = 0
 
@@ -11,7 +15,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
 
     invoice.performances.forEach { perf ->
-        val play = plays[perf.playID]!!
+        val play = playFor(perf)
         val thisAmount: Int = amountFor(play, perf)
 
         // add volume credits
