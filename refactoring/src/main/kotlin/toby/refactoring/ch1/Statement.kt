@@ -35,10 +35,10 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     fun volumeCreditsFor(performance: Performance): Int {
-        var volumeCredits = 0
-        volumeCredits += maxOf(performance.audience - 30, 0)
-        if ("comedy" == playFor(performance).type) volumeCredits += performance.audience / 5
-        return volumeCredits
+        var result = 0
+        result += maxOf(performance.audience - 30, 0)
+        if ("comedy" == playFor(performance).type) result += performance.audience / 5
+        return result
     }
 
     var totalAmount = 0
