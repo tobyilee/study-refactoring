@@ -28,23 +28,23 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     return result
 }
 
-private fun amountFor(play: Play, perf: Performance): Int {
+private fun amountFor(play: Play, performance: Performance): Int {
     var result: Int
 
     when (play.type) {
         "tragedy" -> {
             result = 40000
-            if (perf.audience > 30) {
-                result += 1000 * (perf.audience - 30)
+            if (performance.audience > 30) {
+                result += 1000 * (performance.audience - 30)
             }
         }
 
         "comedy" -> {
             result = 30000
-            if (perf.audience > 20) {
-                result += 10000 + 500 * (perf.audience - 20)
+            if (performance.audience > 20) {
+                result += 10000 + 500 * (performance.audience - 20)
             }
-            result += 300 * perf.audience
+            result += 300 * performance.audience
         }
 
         else -> {
