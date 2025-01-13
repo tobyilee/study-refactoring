@@ -5,8 +5,11 @@ import java.util.*
 
 data class StatementData(
     val customer: String,
-    val performances: List<EnrichedPerformance>
-)
+    val performances: List<EnrichedPerformance>,
+) {
+    var totalAmount: Int = 0
+    var totalVolumeCredits: Int = 0
+}
 
 class EnrichedPerformance(
     val playID: String,
@@ -56,6 +59,22 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun totalVolumeCredits(data: StatementData): Int {
+        var result = 0
+        data.performances.forEach { perf ->
+            result += perf.volumeCredits
+        }
+        return result
+    }
+
+    fun totalAmount(data: StatementData): Int {
+        var result = 0
+        data.performances.forEach { perf ->
+            result += perf.amount
+        }
+        return result
+    }
+
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
         return EnrichedPerformance(performance.playID, performance.audience, playFor(performance)).apply {
             amount = amountFor(this)
@@ -63,7 +82,10 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         }
     }
 
-    val statementData = StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) })
+    val statementData = StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }).apply {
+        totalAmount = totalAmount(this)
+        totalVolumeCredits = totalVolumeCredits(this)
+    }
     return renderPlainText(statementData, plays)
 }
 
@@ -73,29 +95,13 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
         return format.format(amount / 100.0)
     }
 
-    fun totalVolumeCredits(): Int {
-        var result = 0
-        data.performances.forEach { perf ->
-            result += perf.volumeCredits
-        }
-        return result
-    }
-
-    fun totalAmount(): Int {
-        var result = 0
-        data.performances.forEach { perf ->
-            result += perf.amount
-        }
-        return result
-    }
-
     var result = "Statement for ${data.customer}\n"
     data.performances.forEach { perf ->
         result += "  ${perf.play.name}: ${usd(perf.amount)} (${perf.audience} seats)\n"
     }
 
-    result += "Amount owed is ${usd(totalAmount())}\n"
-    result += "You earned ${totalVolumeCredits()} credits\n"
+    result += "Amount owed is ${usd(data.totalAmount)}\n"
+    result += "You earned ${data.totalVolumeCredits} credits\n"
     return result
 }
 
