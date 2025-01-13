@@ -62,16 +62,11 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
 }
 
 open class PerformanceCalculator(val performance: Performance, val play: Play) {
-    fun amount(): Int {
+    open fun amount(): Int {
         var result: Int
 
         when (this.play.type) {
-            "tragedy" -> {
-                result = 40000
-                if (this.performance.audience > 30) {
-                    result += 1000 * (performance.audience - 30)
-                }
-            }
+            "tragedy" -> throw Error("Bad thing")
 
             "comedy" -> {
                 result = 30000
@@ -97,6 +92,13 @@ open class PerformanceCalculator(val performance: Performance, val play: Play) {
 }
 
 class TragedyCalculator(performance: Performance, play: Play): PerformanceCalculator(performance, play) {
+    override fun amount(): Int {
+        var result: Int = 40000
+        if (this.performance.audience > 30) {
+            result += 1000 * (performance.audience - 30)
+        }
+        return result
+    }
 }
 
 class ComedyCalculator(performance: Performance, play: Play): PerformanceCalculator(performance, play) {
