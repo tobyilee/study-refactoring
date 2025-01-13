@@ -47,19 +47,19 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     }
 
     fun totalVolumeCredits(): Int {
-        var volumeCredits = 0
+        var result = 0
         invoice.performances.forEach { perf ->
-            volumeCredits += volumeCreditsFor(perf)
+            result += volumeCreditsFor(perf)
         }
-        return volumeCredits
+        return result
     }
 
     fun totalAmount(): Int {
-        var totalAmount = 0
+        var result = 0
         invoice.performances.forEach { perf ->
-            totalAmount += amountFor(perf)
+            result += amountFor(perf)
         }
-        return totalAmount
+        return result
     }
 
     var result = "Statement for ${invoice.customer}\n"
