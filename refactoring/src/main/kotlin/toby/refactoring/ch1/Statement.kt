@@ -24,7 +24,7 @@ class EnrichedPerformance(
 fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementData {
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
         fun playFor(performance: Performance): Play {
-            return toby.refactoring.ch1.plays[performance.playID]!!
+            return plays[performance.playID]!!
         }
 
         fun amountFor(performance: EnrichedPerformance): Int {
