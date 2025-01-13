@@ -82,10 +82,10 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         totalAmount = totalAmount(this)
         totalVolumeCredits = totalVolumeCredits(this)
     }
-    return renderPlainText(statementData, plays)
+    return renderPlainText(statementData)
 }
 
-fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
+fun renderPlainText(data: StatementData): String {
     fun usd(amount: Int): String {
         val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
         return format.format(amount / 100.0)
