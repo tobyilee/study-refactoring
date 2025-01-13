@@ -9,7 +9,12 @@ data class StatementData(
 )
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    val statementData = StatementData(invoice.customer, invoice.performances)
+    fun enrichPerformance(performance: Performance): Performance {
+        val result = performance.copy()
+        return result
+    }
+
+    val statementData = StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) })
     return renderPlainText(statementData, plays)
 }
 
