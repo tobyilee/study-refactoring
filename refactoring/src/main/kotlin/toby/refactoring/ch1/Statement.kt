@@ -46,6 +46,14 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return format.format(amount / 100.0)
     }
 
+    fun totalVolumeCredits(): Int {
+        var volumeCredits = 0
+        invoice.performances.forEach { perf ->
+            volumeCredits += volumeCreditsFor(perf)
+        }
+        return volumeCredits
+    }
+
     var totalAmount = 0
     var result = "Statement for ${invoice.customer}\n"
 
@@ -54,10 +62,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         totalAmount += amountFor(perf)
     }
 
-    var volumeCredits = 0
-    invoice.performances.forEach { perf ->
-        volumeCredits += volumeCreditsFor(perf)
-    }
+    val volumeCredits = totalVolumeCredits()
 
     result += "Amount owed is ${usd(totalAmount)}\n"
     result += "You earned $volumeCredits credits\n"
