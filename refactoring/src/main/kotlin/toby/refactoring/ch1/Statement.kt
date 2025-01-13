@@ -12,26 +12,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 
     invoice.performances.forEach { perf ->
         val play = plays[perf.playID]!!
-        var thisAmount: Int
-
-        when (play.type) {
-            "tragedy" -> {
-                thisAmount = 40000
-                if (perf.audience > 30) {
-                    thisAmount += 1000 * (perf.audience - 30)
-                }
-            }
-            "comedy" -> {
-                thisAmount = 30000
-                if (perf.audience > 20) {
-                    thisAmount += 10000 + 500 * (perf.audience - 20)
-                }
-                thisAmount += 300 * perf.audience
-            }
-            else -> {
-                throw IllegalArgumentException("Unknown type: ${play.type}")
-            }
-        }
+        val thisAmount: Int = amountFor(play, perf)
 
         // add volume credits
         volumeCredits += maxOf(perf.audience - 30, 0)
@@ -45,6 +26,32 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     result += "Amount owed is ${format.format(totalAmount / 100.0)}\n"
     result += "You earned $volumeCredits credits\n"
     return result
+}
+
+private fun amountFor(play: Play, perf: Performance): Int {
+    var thisAmount: Int
+
+    when (play.type) {
+        "tragedy" -> {
+            thisAmount = 40000
+            if (perf.audience > 30) {
+                thisAmount += 1000 * (perf.audience - 30)
+            }
+        }
+
+        "comedy" -> {
+            thisAmount = 30000
+            if (perf.audience > 20) {
+                thisAmount += 10000 + 500 * (perf.audience - 20)
+            }
+            thisAmount += 300 * perf.audience
+        }
+
+        else -> {
+            throw IllegalArgumentException("Unknown type: ${play.type}")
+        }
+    }
+    return thisAmount
 }
 
 fun main() {
