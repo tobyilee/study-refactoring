@@ -23,11 +23,16 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         return plays[performance.playID]!!
     }
 
+    fun createPerformanceCalculator(performance: Performance, play: Play): PerformanceCalculator {
+        return when(play.type) {
+            "tragedy" -> TragedyCalculator(performance, play)
+            "comedy" -> ComedyCalculator(performance, play)
+            else -> throw IllegalArgumentException("Unknown type: ${play.type}")
+        }
+    }
+
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
-        val calculator = PerformanceCalculator(
-            performance,
-            playFor(performance)
-        )
+        val calculator = createPerformanceCalculator(performance, playFor(performance))
         return EnrichedPerformance(
             performance.playID,
             performance.audience,
@@ -56,7 +61,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     }
 }
 
-class PerformanceCalculator(val performance: Performance, var play: Play) {
+open class PerformanceCalculator(val performance: Performance, val play: Play) {
     fun amount(): Int {
         var result: Int
 
@@ -89,4 +94,10 @@ class PerformanceCalculator(val performance: Performance, var play: Play) {
         if ("comedy" == this.play.type) result += this.performance.audience / 5
         return result
     }
+}
+
+class TragedyCalculator(performance: Performance, play: Play): PerformanceCalculator(performance, play) {
+}
+
+class ComedyCalculator(performance: Performance, play: Play): PerformanceCalculator(performance, play) {
 }
