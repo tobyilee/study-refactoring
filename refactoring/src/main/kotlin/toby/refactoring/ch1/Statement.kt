@@ -41,20 +41,23 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun format(amount: Int): String {
+        val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
+        return format.format(amount / 100.0)
+    }
+
     var totalAmount = 0
     var volumeCredits = 0
 
     var result = "Statement for ${invoice.customer}\n"
-    val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
 
     invoice.performances.forEach { perf ->
         volumeCredits += volumeCreditsFor(perf)
 
-        // print line for this order
-        result += "  ${playFor(perf).name}: ${format.format(amountFor(perf) / 100.0)} (${perf.audience} seats)\n"
+        result += "  ${playFor(perf).name}: ${format(amountFor(perf))} (${perf.audience} seats)\n"
         totalAmount += amountFor(perf)
     }
-    result += "Amount owed is ${format.format(totalAmount / 100.0)}\n"
+    result += "Amount owed is ${format(totalAmount)}\n"
     result += "You earned $volumeCredits credits\n"
     return result
 }
