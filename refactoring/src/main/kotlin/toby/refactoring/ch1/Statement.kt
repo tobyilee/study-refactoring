@@ -3,11 +3,17 @@ package toby.refactoring.ch1
 import java.text.NumberFormat
 import java.util.*
 
+data class StatementData(
+    val customer: String,
+    val performances: List<Performance>
+)
+
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    return renderPlainText(invoice, plays)
+    val statementData = StatementData(invoice.customer, invoice.performances)
+    return renderPlainText(statementData, plays)
 }
 
-fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
+fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
     fun playFor(performance: Performance): Play {
         return plays[performance.playID]!!
     }
@@ -52,7 +58,7 @@ fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
 
     fun totalVolumeCredits(): Int {
         var result = 0
-        invoice.performances.forEach { perf ->
+        data.performances.forEach { perf ->
             result += volumeCreditsFor(perf)
         }
         return result
@@ -60,14 +66,14 @@ fun renderPlainText(invoice: Invoice, plays: Map<String, Play>): String {
 
     fun totalAmount(): Int {
         var result = 0
-        invoice.performances.forEach { perf ->
+        data.performances.forEach { perf ->
             result += amountFor(perf)
         }
         return result
     }
 
-    var result = "Statement for ${invoice.customer}\n"
-    invoice.performances.forEach { perf ->
+    var result = "Statement for ${data.customer}\n"
+    data.performances.forEach { perf ->
         result += "  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n"
     }
 
