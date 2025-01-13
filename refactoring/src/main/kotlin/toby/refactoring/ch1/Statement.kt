@@ -8,10 +8,10 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return plays[performance.playID]!!
     }
 
-    fun amountFor(play: Play, performance: Performance): Int {
+    fun amountFor(performance: Performance): Int {
         var result: Int
 
-        when (play.type) {
+        when (playFor(performance).type) {
             "tragedy" -> {
                 result = 40000
                 if (performance.audience > 30) {
@@ -28,7 +28,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
             }
 
             else -> {
-                throw IllegalArgumentException("Unknown type: ${play.type}")
+                throw IllegalArgumentException("Unknown type: ${playFor(performance).type}")
             }
         }
         return result
@@ -41,7 +41,7 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
 
     invoice.performances.forEach { perf ->
-        val thisAmount: Int = amountFor(playFor(perf), perf)
+        val thisAmount: Int = amountFor(perf)
 
         // add volume credits
         volumeCredits += maxOf(perf.audience - 30, 0)
