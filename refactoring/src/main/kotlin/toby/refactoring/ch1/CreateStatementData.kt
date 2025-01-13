@@ -61,10 +61,8 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
     }
 }
 
-open class PerformanceCalculator(val performance: Performance, val play: Play) {
-    open fun amount(): Int {
-        throw NotImplementedError()
-    }
+abstract class PerformanceCalculator(val performance: Performance, val play: Play) {
+    abstract fun amount(): Int
 
     open fun volumeCredits(): Int {
         return maxOf(this.performance.audience - 30, 0)
