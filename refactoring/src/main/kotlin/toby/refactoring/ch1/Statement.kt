@@ -21,42 +21,49 @@ class EnrichedPerformance(
     var volumeCredits: Int = 0
 }
 
-fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    fun playFor(performance: Performance): Play {
-        return plays[performance.playID]!!
-    }
-
-    fun amountFor(performance: EnrichedPerformance): Int {
-        var result: Int
-
-        when (performance.play.type) {
-            "tragedy" -> {
-                result = 40000
-                if (performance.audience > 30) {
-                    result += 1000 * (performance.audience - 30)
-                }
-            }
-
-            "comedy" -> {
-                result = 30000
-                if (performance.audience > 20) {
-                    result += 10000 + 500 * (performance.audience - 20)
-                }
-                result += 300 * performance.audience
-            }
-
-            else -> {
-                throw IllegalArgumentException("Unknown type: ${performance.play}")
-            }
+fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementData {
+    fun enrichPerformance(performance: Performance): EnrichedPerformance {
+        fun playFor(performance: Performance): Play {
+            return toby.refactoring.ch1.plays[performance.playID]!!
         }
-        return result
-    }
 
-    fun volumeCreditsFor(performance: EnrichedPerformance): Int {
-        var result = 0
-        result += maxOf(performance.audience - 30, 0)
-        if ("comedy" == performance.play.type) result += performance.audience / 5
-        return result
+        fun amountFor(performance: EnrichedPerformance): Int {
+            var result: Int
+
+            when (performance.play.type) {
+                "tragedy" -> {
+                    result = 40000
+                    if (performance.audience > 30) {
+                        result += 1000 * (performance.audience - 30)
+                    }
+                }
+
+                "comedy" -> {
+                    result = 30000
+                    if (performance.audience > 20) {
+                        result += 10000 + 500 * (performance.audience - 20)
+                    }
+                    result += 300 * performance.audience
+                }
+
+                else -> {
+                    throw IllegalArgumentException("Unknown type: ${performance.play}")
+                }
+            }
+            return result
+        }
+
+        fun volumeCreditsFor(performance: EnrichedPerformance): Int {
+            var result = 0
+            result += maxOf(performance.audience - 30, 0)
+            if ("comedy" == performance.play.type) result += performance.audience / 5
+            return result
+        }
+
+        return EnrichedPerformance(performance.playID, performance.audience, playFor(performance)).apply {
+            amount = amountFor(this)
+            volumeCredits = volumeCreditsFor(this)
+        }
     }
 
     fun totalVolumeCredits(data: StatementData): Int {
@@ -71,18 +78,14 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         }
     }
 
-    fun enrichPerformance(performance: Performance): EnrichedPerformance {
-        return EnrichedPerformance(performance.playID, performance.audience, playFor(performance)).apply {
-            amount = amountFor(this)
-            volumeCredits = volumeCreditsFor(this)
-        }
-    }
-
-    val statementData = StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }).apply {
+    return StatementData(invoice.customer, invoice.performances.map { enrichPerformance(it) }).apply {
         totalAmount = totalAmount(this)
         totalVolumeCredits = totalVolumeCredits(this)
     }
-    return renderPlainText(statementData)
+}
+
+fun statement(invoice: Invoice, plays: Map<String, Play>): String {
+    return renderPlainText(createStatementData(invoice, plays))
 }
 
 fun renderPlainText(data: StatementData): String {
