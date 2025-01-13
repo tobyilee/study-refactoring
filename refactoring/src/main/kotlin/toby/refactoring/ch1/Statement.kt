@@ -52,11 +52,14 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
     var result = "Statement for ${invoice.customer}\n"
 
     invoice.performances.forEach { perf ->
-        volumeCredits += volumeCreditsFor(perf)
-
         result += "  ${playFor(perf).name}: ${usd(amountFor(perf))} (${perf.audience} seats)\n"
         totalAmount += amountFor(perf)
     }
+
+    invoice.performances.forEach { perf ->
+        volumeCredits += volumeCreditsFor(perf)
+    }
+
     result += "Amount owed is ${usd(totalAmount)}\n"
     result += "You earned $volumeCredits credits\n"
     return result
