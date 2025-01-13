@@ -3,13 +3,12 @@ package toby.refactoring.ch1
 import java.text.NumberFormat
 import java.util.*
 
-
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
-    return renderPlainText(createStatementData(invoice, plays))
+    return renderPlainText(StatementData.create(invoice, plays))
 }
 
 fun htmlStatement(invoice: Invoice, plays: Map<String, Play>): String {
-    return renderHtml(createStatementData(invoice, plays))
+    return renderHtml(StatementData.create(invoice, plays))
 }
 
 fun usd(amount: Int): String {
