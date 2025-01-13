@@ -23,13 +23,6 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
         return plays[performance.playID]!!
     }
 
-    fun volumeCreditsFor(performance: Performance): Int {
-        return PerformanceCalculator(
-            performance,
-            playFor(performance)
-        ).volumeCredits()
-    }
-
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
         val calculator = PerformanceCalculator(
             performance,
@@ -41,7 +34,7 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
             calculator.play
         ).apply {
             amount = calculator.amount()
-            volumeCredits = volumeCreditsFor(performance)
+            volumeCredits = calculator.volumeCredits()
         }
     }
 
