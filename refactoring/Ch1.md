@@ -37,3 +37,9 @@ Swith 같은 전형적인 Condition을 다형성으로 적용하는 것이 필�
 
 MF처럼 몇 가지 코딩 표준, 관례를 잡아두면 좋겠다. 함수의 결과로 리턴하는 값을 계산하는 변수 이름은 항상 result라든가.
 
+### Class의 factory method를 이용하도록 리팩터링
+
+JS 스타일로 함수만으로 구성하는 대신, 기존에 만들어 놓은 data class에 companion object를 이용한 factory method를 만들고 관련된 함수를 
+클래스 내부로 이동
+
+클래스 기반의 정적 타이핑 언어를 쓴다면 이런 방식이 더 좋겠다.
