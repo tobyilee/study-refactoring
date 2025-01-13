@@ -12,8 +12,10 @@ class EnrichedPerformance(
     val playID: String,
     val audience: Int,
     val play: Play,
+
 ) {
     var amount: Int = 0 // lateinit을 쓰고 싶지만 primitive type이라서 안됨
+    var volumeCredits: Int = 0
 }
 
 fun statement(invoice: Invoice, plays: Map<String, Play>): String {
@@ -47,9 +49,17 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
         return result
     }
 
+    fun volumeCreditsFor(performance: EnrichedPerformance): Int {
+        var result = 0
+        result += maxOf(performance.audience - 30, 0)
+        if ("comedy" == performance.play.type) result += performance.audience / 5
+        return result
+    }
+
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
         return EnrichedPerformance(performance.playID, performance.audience, playFor(performance)).apply {
             amount = amountFor(this)
+            volumeCredits = volumeCreditsFor(this)
         }
     }
 
@@ -58,13 +68,6 @@ fun statement(invoice: Invoice, plays: Map<String, Play>): String {
 }
 
 fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
-    fun volumeCreditsFor(performance: EnrichedPerformance): Int {
-        var result = 0
-        result += maxOf(performance.audience - 30, 0)
-        if ("comedy" == performance.play.type) result += performance.audience / 5
-        return result
-    }
-
     fun usd(amount: Int): String {
         val format: NumberFormat = NumberFormat.getCurrencyInstance(Locale.US)
         return format.format(amount / 100.0)
@@ -73,7 +76,7 @@ fun renderPlainText(data: StatementData, plays: Map<String, Play>): String {
     fun totalVolumeCredits(): Int {
         var result = 0
         data.performances.forEach { perf ->
-            result += volumeCreditsFor(perf)
+            result += perf.volumeCredits
         }
         return result
     }
