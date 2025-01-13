@@ -8,15 +8,13 @@ data class StatementData(
     var totalVolumeCredits: Int = 0
 }
 
-class EnrichedPerformance(
+data class EnrichedPerformance(
     val playID: String,
     val audience: Int,
     val play: Play,
-
-    ) {
-    var amount: Int = 0 // lateinit을 쓰고 싶지만 primitive type이라서 안됨
-    var volumeCredits: Int = 0
-}
+    var amount: Int,
+    var volumeCredits: Int,
+)
 
 fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementData {
     fun playFor(performance: Performance): Play {
@@ -33,14 +31,14 @@ fun createStatementData(invoice: Invoice, plays: Map<String, Play>): StatementDa
 
     fun enrichPerformance(performance: Performance): EnrichedPerformance {
         val calculator = createPerformanceCalculator(performance, playFor(performance))
+
         return EnrichedPerformance(
             performance.playID,
             performance.audience,
-            calculator.play
-        ).apply {
-            amount = calculator.amount()
-            volumeCredits = calculator.volumeCredits()
-        }
+            calculator.play,
+            calculator.amount(),
+            calculator.volumeCredits()
+        )
     }
 
     fun totalVolumeCredits(data: StatementData): Int {
