@@ -25,7 +25,7 @@
 
 - 계속 나오는 거지만 class를 만드는 것을 두려워하지 말자.
  
-## Divergenet Change
+## Divergent Change
 
 ## Shotgun Surgery
 
