@@ -10,7 +10,7 @@ class Province(
     val demand: Int = doc.demand
     val price: Int = doc.price
 
-    private val producers: MutableList<Producer> = mutableListOf()
+    val producers: MutableList<Producer> = mutableListOf()
 
     init {
         doc.producers.forEach {
@@ -18,7 +18,7 @@ class Province(
         }
     }
 
-    private fun addProducer(data: Producer, ) {
+    private fun addProducer(data: Producer) {
         producers.add(data)
         totalProduction += data.production
     }
